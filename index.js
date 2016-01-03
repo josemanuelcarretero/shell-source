@@ -8,6 +8,7 @@ var reserved = {
 };
 
 module.exports = function(filename, opts, cb) {
+  var options;
   if (typeof opts === 'function') {
     cb = opts;
     opts = {};
@@ -27,13 +28,24 @@ module.exports = function(filename, opts, cb) {
   else {
     opts.reserved = xtend(reserved);
   }
+  
+  if (opts.env) {
+    options={};
+    options.env = options.env;
+  }
+
+  if (opts.cwd) {
+    options=options||{};
+    options.cwd = opts.cwd;
+  }
 
   var env = {};
   var count = 0;
   var status = null;
   var stdout = null;
   var stderr = null;
-  var proc = spawn(opts.wrapper, [ filename ]);
+  
+  var proc = spawn(opts.wrapper, [ filename ],options);
   
   proc.on('error', function(err) {
     cb(err);
